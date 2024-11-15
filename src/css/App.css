@@ -6,12 +6,7 @@
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 100px 1fr;
-}
-
-.layout-header {
-    background-color: #010409;
-    border-bottom: 1px solid #3d444d;
+    grid-template-rows: 104px 1fr;
 }
 
 .layout-body {

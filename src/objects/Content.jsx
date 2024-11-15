@@ -1,10 +1,10 @@
-import { memo } from "react";
+import { memo } from 'react';
 
 export const Content = memo(() => {
 
   return (
-    <div className="layout-content">
-      Content
+    <div className='layout-content'>
+
     </div>
   );
 });
