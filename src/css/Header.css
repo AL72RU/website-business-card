@@ -1,0 +1,31 @@
+.layout-header {
+    background-color: #010409;
+    border-bottom: 1px solid #3d444d;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    width: 980px;
+    align-items: center;
+}
+
+.logo {
+    margin-inline: 10px;
+    content: url('../images/logo.png');
+}
+
+.login,
+.slash,
+.title {
+    font: 30px "Fira Sans", sans-serif;
+}
+
+.slash {
+    margin-inline: 10px;
+}
+
+a {
+    text-decoration: none;
+}
