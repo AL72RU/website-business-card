@@ -1,0 +1,57 @@
+env:
+  browser: true
+  es2020: true
+extends:
+  - 'eslint:recommended'
+  - 'plugin:react-hooks/recommended'
+ignorePatterns:
+  - dist
+  - .eslintrc.yml
+plugins:
+  - react
+  - react-refresh
+  - react-hooks
+parserOptions:
+  ecmaVersion: 2020
+  sourceType: module
+  ecmaFeatures:
+    jsx: true
+    modules: true
+    experimentalObjectRestSpread: true
+
+settings:
+  import/resolver:
+    node:
+      extensions:
+        - '.js'
+        - '.jsx'
+        - '.ts'
+        - '.tsx'
+rules:
+  padding-line-between-statements:
+    - error
+    - blankLine: always
+      prev: multiline-const
+      next: multiline-const
+  eqeqeq: error
+  object-shorthand: error
+  comma-dangle:
+    - error
+    - only-multiline
+  #  import/no-unresolved:
+  #    - 2
+  #  unused-imports/no-unused-imports: error
+  no-unused-vars: 'off'
+  no-unused-expressions: [error, { enforceForJSX: true }]
+  react/react-in-jsx-scope: 'off'
+  react/prop-types: 'off'
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: error
+  react/jsx-boolean-value:
+    - 'off'
+    - never
+  curly: [ 2, "all" ]
+  quotes: [ "error", "single" ]
+  jsx-quotes: [ "error", "prefer-single" ]
+  semi: [ "error", "always" ]
+  object-curly-spacing: ["error", "always", { objectsInObjects: false }]
