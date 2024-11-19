@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/website-business-card/static/css/main.beeeaca1.css",
+    "main.js": "/website-business-card/static/js/main.251f2c37.js",
+    "static/js/453.48a11019.chunk.js": "/website-business-card/static/js/453.48a11019.chunk.js",
+    "index.html": "/website-business-card/index.html",
+    "main.beeeaca1.css.map": "/website-business-card/static/css/main.beeeaca1.css.map",
+    "main.251f2c37.js.map": "/website-business-card/static/js/main.251f2c37.js.map",
+    "453.48a11019.chunk.js.map": "/website-business-card/static/js/453.48a11019.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.beeeaca1.css",
+    "static/js/main.251f2c37.js"
+  ]
+}
