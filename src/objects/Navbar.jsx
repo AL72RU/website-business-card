@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Avatar,
   Box,
   Container,
   styled,
@@ -8,6 +7,7 @@ import {
   Typography
 } from '@mui/material';
 import { DarkMode, LightMode, Menu } from '@mui/icons-material';
+import { useUIContext } from '../context/UIContext';
 
 const StyledToolbar = styled(Toolbar) ({
   display: 'flex',
@@ -38,22 +38,23 @@ const UserBox = styled(Box)(({ theme }) => ({
 }));
 
 const Navbar = ({ mode, setMode }) => {
+  const { setDrawerOpen } = useUIContext();
+
   return (
     <AppBar
       position='sticky'
       sx={{
         borderBottom: '1px solid #3d444d',
-        backgroundImage: 'none'
+        backgroundImage: 'none',
+        height: '65px'
       }}
     >
-      <Container sx={{
-        '--Paper-overlay': undefined
-      }}>
+      <Container>
         <StyledToolbar>
           <Typography variant='h6' sx={{ display: { xs: 'none', sm: 'block' }}}>
             Website business card
           </Typography>
-          <Menu sx={{ display: { xs: 'block', sm: 'none' }}}/>
+          <Menu onClick={() => setDrawerOpen(true)} sx={{ display: { xs: 'block', sm: 'none' }}}/>
           {/*<Search>*/}
           {/*  <InputBase placeholder='Search...' sx={{ color: '#000000' }}/>*/}
           {/*</Search>*/}
@@ -69,7 +70,7 @@ const Navbar = ({ mode, setMode }) => {
             ) : (
               <LightMode onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}/>
             )}
-            <Avatar sx={{ width: 30, height: 30 }} src=''/>
+            {/*<Avatar sx={{ width: 30, height: 30 }} src=''/>*/}
           </UserBox>
         </StyledToolbar>
       </Container>
