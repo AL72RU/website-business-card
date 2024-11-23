@@ -77,7 +77,7 @@ function App() {
                   <Route path={'/home'} element={<HomePage/>}/>
                   <Route path={'/profile'} element={<Profile/>}/>
                   <Route path={'/projects'} element={<Projects/>}/>
-                  <Route path={'/notes'} element={<Notes/>}/>
+                  <Route path={'/notes'} element={<Notes theme={theme}/>}/>
                   <Route path='*' element={<Navigate to='/home'/>}/>
                 </Routes>
               </Router>
