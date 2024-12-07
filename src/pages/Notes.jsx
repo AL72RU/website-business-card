@@ -1,4 +1,5 @@
-import { Box, Card, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { Box, Card, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { SubdirectoryArrowRight } from '@mui/icons-material';
 
 const frameworks = {
   title: 'Frameworks used',
@@ -26,15 +27,35 @@ const links = {
   title: 'Useful links',
   list: [
     {
+      name: 'The JavaScript language',
+      path: 'https://javascript.info/js'
+    },
+    {
+      name: 'Git Tutorial',
+      path: 'https://www.w3schools.com/git/default.asp'
+    },
+    {
+      name: 'React',
+      path: 'https://legacy.reactjs.org/'
+    },
+    {
+      name: 'Redux ',
+      path: 'https://redux.js.org/'
+    },
+    {
       name: 'Airbnb JavaScript Style Guide() {',
       path: 'https://github.com/airbnb/javascript/blob/master/README.md'
+    },
+    {
+      name: 'Developer Roadmaps ',
+      path: 'https://roadmap.sh/'
     },
   ]
 };
 
 export default function Notes({ theme }) {
   return (
-    <Box flex={4} p={2} height={'calc(100vh - 97px)'}>
+    <Box flex={4} p={2} minHeight={'calc(100vh - 97px)'}>
       <Typography variant='h6'>
         {'Here will be my notes, records, comments, links...'}
       </Typography>
@@ -66,15 +87,16 @@ export default function Notes({ theme }) {
       {/*  Useful links  */}
       <Card variant={'outlined'} color={'neutral'} sx={{ padding: 2, marginTop: 2 }}>
         <ListItemText primary={links.title} />
-        <ul>
+        <List sx={{ padding: 0 }}>
           {links.list.map(({ name, path }, index) => (
-            <li key={index}>
-              <ListItemButton component='a' href={path} target='_blank'>
+            <ListItem key={index} sx={{ padding: 0 }}>
+              <ListItemButton component='a' href={path} target='_blank' sx={{ padding:0 }}>
+                <SubdirectoryArrowRight sx={{ marginLeft: '15px', marginRight: '10px' }}/>
                 <ListItemText primary={name} sx={{ color: theme.palette.text.primary }}/>
               </ListItemButton>
-            </li>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       </Card>
 
     </Box>

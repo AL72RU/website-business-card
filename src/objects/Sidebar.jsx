@@ -10,9 +10,9 @@ const Sidebar = ({ theme }) => {
       sx={{ display: { xs: 'none', sm: 'block' }}}
       padding={1}
     >
-      <div position='fixed' >
+      <Box position='fixed' >
         <ListMenu theme={theme} />
-      </div>
+      </Box>
     </Box>
   );
 };

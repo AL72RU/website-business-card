@@ -9,6 +9,8 @@ import Notes from './pages/Notes';
 import AppDrawer from './objects/AppDrawer';
 import { UIProvider } from './context/UIContext';
 import { useState } from 'react';
+import Snake from './pages/projecs/Snake';
+import ToDoList from './pages/projecs/ToDoList';
 
 const basename = ''; /*  '/website-business-card/' or ''  */
 
@@ -72,14 +74,16 @@ function App() {
                 }}
               >
                 <Sidebar theme={theme}/>
-                <AppDrawer theme={theme}/>
                 <Routes>
                   <Route path={'/home'} element={<HomePage/>}/>
                   <Route path={'/profile'} element={<Profile/>}/>
-                  <Route path={'/projects'} element={<Projects/>}/>
+                  <Route path={'/projects'} element={<Projects theme={theme}/>}/>
+                  <Route path={'/projects/snake'} element={<Snake/>}/>
+                  <Route path={'/projects/todolist'} element={<ToDoList/>}/>
                   <Route path={'/notes'} element={<Notes theme={theme}/>}/>
                   <Route path='*' element={<Navigate to='/home'/>}/>
                 </Routes>
+                <AppDrawer theme={theme}/>
               </Router>
             </Stack>
           </Container>
