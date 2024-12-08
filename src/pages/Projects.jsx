@@ -16,7 +16,7 @@ export default function Projects({ theme }) {
           <ListItemIcon sx={{ padding: 0, minWidth: 0, marginLeft: 3, marginRight: 2 }}>
             <FormatListBulleted />
           </ListItemIcon>
-          <ListItemText primary={'Todo List (in development)'} sx={{ color: theme.palette.text.primary }}/>
+          <ListItemText primary={'Todo List'} sx={{ color: theme.palette.text.primary }}/>
         </Link>
       </Card>
 
@@ -25,7 +25,7 @@ export default function Projects({ theme }) {
           <ListItemIcon sx={{ padding: 0, minWidth: 0, marginLeft: 3, marginRight: 2 }}>
             <Gesture />
           </ListItemIcon>
-          <ListItemText primary={'Snake game (in development)'} sx={{ color: theme.palette.text.primary }}/>
+          <ListItemText primary={'Snake game'} sx={{ color: theme.palette.text.primary }}/>
         </Link>
       </Card>
 

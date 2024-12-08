@@ -3,11 +3,11 @@ import { Box, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { ArrowBack, Gesture, QuestionMark } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
-const box = 46;
-const rows = 11;
-const columns = 7;
+const box = 44;
+const rows = 10;
+const columns = 8;
 const snakeStep = 1;
-const speedGame = 1;
+const speedGame = 8;
 const foodRadius = Math.round(box/100*90/2);
 const foodColor = '#FF0000';
 const snakeWidth = Math.round(box/100*90);
@@ -16,48 +16,16 @@ const snakeColor = '#5cef05';
 export default function Snake() {
   const canvasRef = useRef();
   const [score, setScore] = useState(0);
-  const [food, setFood] = useState({ x: 3, y: 5 });
-  const [snake, setSnake] = useState([{ x: box/2+box*(3), y: box/2+box*(9) }]);
-  const [direction, setDirection] = useState('up');
-  const [skipSteps, setSkipSteps] = useState(box);
+  const [maxScore, setMaxScore] = useState(0);
+  const [food, setFood] = useState({ x: 4, y: 2 });
+  const [snake, setSnake] = useState([{ x: 3*box+box/2, y: 7*box+box/2 }]);
+  const [directions, setDirections] = useState([0]);
+  const [skipSteps, setSkipSteps] = useState(0);
+  const [onTarns, setOnTarns] = useState(new Set([]));
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-
-    const handleKeyPress = (event) => {
-      switch (event.key) {
-        case 'ArrowRight':
-          setDirection(prevState => {
-            if (prevState !== 'left') {
-              return 'right';
-            }
-          });
-          break;
-        case 'ArrowLeft':
-          setDirection(prevState => {
-            if (prevState !== 'right') {
-              return 'left';
-            }
-          });
-          break;
-        case 'ArrowUp':
-          setDirection(prevState => {
-            if (prevState !== 'down') {
-              return 'up';
-            }});
-          break;
-        case 'ArrowDown':
-          setDirection(prevState => {
-            if (prevState !== 'up') {
-              return 'down';
-            }});
-          break;
-        default:
-          break;
-      }
-    };
-    window.addEventListener('keydown', handleKeyPress);
 
     const drawBack = () => {
       for (let i = 0; i < columns; i++) {
@@ -90,198 +58,236 @@ export default function Snake() {
     };
 
     const drawSnake = () => {
-      ctx.beginPath();
-      ctx.lineWidth = snakeWidth;
-      ctx.strokeStyle = snakeColor;
-      ctx.lineCap = 'round';
-      for (let i = 0; i < snake.length; i++) {
-        if (i) {
-          ctx.lineTo(snake[i].x, snake[i].y);
-        } else {
-          ctx.moveTo(snake[i].x, snake[i].y);
-          if (snake.length === 1) {
+      if (snake.length === 1) {
+        const pi = Math.PI;
+        ctx.beginPath();
+        ctx.fillStyle = snakeColor;
+        ctx.arc(snake[0].x, snake[0].y, snakeWidth/2, 0, 2*pi, false);
+        ctx.fill();
+        ctx.closePath();
+      } else {
+        ctx.beginPath();
+        ctx.lineWidth = snakeWidth;
+        ctx.strokeStyle = snakeColor;
+        ctx.lineCap = 'round';
+        for (let i = 0; i < snake.length; i++) {
+          if (i) {
             ctx.lineTo(snake[i].x, snake[i].y);
+          } else {
+            ctx.moveTo(snake[i].x, snake[i].y);
           }
         }
+        ctx.stroke();
       }
-      ctx.stroke();
     };
 
-    function eatTail(head, arr) {
-      for (let i = 0; i < arr.length; i++) {
-        if (head.x === arr[i].x && head.y === arr[i].y) {
-          clearInterval(game);
+    const checkCollisionFood = (newFood) => {
+      for (const item of snake) {
+        if (item.x === box/2+box*newFood.x && item.y === box/2+box*newFood.y) {
+          return true;
         }
       }
-    }
+      return false;
+    };
 
-    // ============================================================================
+    const isWin = () => {
+      if (score === rows * columns -1) {
+        clearInterval(game);
+      }
+    };
 
-    const drawGame = () => {
-      ctx.clearRect(0, 0, box*columns, box*rows);
-      drawBack();
-      drawFood();
-      drawSnake();
+    const gameOver = () => {
+      setDirections([0]);
+      setSnake([{ x: box/2+box*(3), y: box/2+box*(7) }]);
+      setFood({ x: 4, y: 2 });
+      setScore(0);
+      clearInterval(game);
+    };
 
-      const newSnake = [...snake];
-      const snakeHead = { x: newSnake[0].x, y: newSnake[0].y };
-      let snakeX = snakeHead.x;
-      let snakeY = snakeHead.y;
+    function eatFood(head) {
+      if (snake[0].x === box/2+box*(food.x) && snake[0].y === box/2+box*(food.y)) {
+        setScore(prevState => prevState + 1);
+        setSkipSteps(box-1);
 
-      if (snakeX === box/2+box*(food.x) && snakeY === box/2+box*(food.y)) {
-        setScore(prevState => prevState+1);
-        setFood({
-          x: Math.floor(Math.random() * (columns)),
-          y: Math.floor(Math.random() * (rows))
-        });
-        setSkipSteps(box);
+        isWin();
+
+        const newFood = {};
+        do {
+          newFood.x = Math.floor(Math.random() * (columns));
+          newFood.y = Math.floor(Math.random() * (rows));
+        } while (checkCollisionFood(newFood));
+        setFood(newFood);
       } else {
         if (skipSteps) {
           setSkipSteps(prevState => prevState - 1);
         } else {
           // удаляет последний элемент в массиве
-          // snake.pop();
           setSnake(prevState => prevState.filter((item, index) => index !== prevState.length-1 ));
         }
       }
+    }
 
-      if (direction === 'left') {snakeX -= snakeStep;}
-      if (direction === 'right') {snakeX += snakeStep;}
-      if (direction === 'up') {snakeY -= snakeStep;}
-      if (direction === 'down') {snakeY += snakeStep;}
+    function collision() {
+      if (snake.length > 3*box+1) {
+        const head = { ...snake[0] };
+        const tail = [...snake.slice(box*3+1)];
+
+        // Neck removal
+        // for (let i = 0; i < box*4; i++) {
+        //   tail.shift();
+        // }
+
+        for (const item of tail) {
+          if ((head.x > item.x - box/2 && head.x < item.x + box/2)
+            && (head.y > item.y - box/2 && head.y < item.y + box/2)) {
+            gameOver();
+          }
+        }
+      }
+
+      if ((snake[0].x < box/2) || (snake[0].x > box*columns-box/2)
+        || (snake[0].y < box/2) || (snake[0].y > box*rows-box/2)) {
+        gameOver();
+      }
+    }
+
+    function step() {
+      const newSnake = [...snake];
+      let snakeX = newSnake[0].x;
+      let snakeY = newSnake[0].y;
+
+      if (onTarns.has(snakeY)) {
+        if (directions[0] === 37) {snakeX -= snakeStep;}
+        if (directions[0] === 39) {snakeX += snakeStep;}
+      }
+      if (onTarns.has(snakeX)) {
+        if (directions[0] === 38) {snakeY -= snakeStep;}
+        if (directions[0] === 40) {snakeY += snakeStep;}
+      }
       let newHead = {
         x: snakeX,
         y: snakeY
       };
-
-      if (snakeX < box/2 || snakeX > box*columns-box/2
-        || snakeY < box/2 || snakeY > box*rows-box/2)
-      {
-        // setDirection('up');
-        // setFood({ x: 3, y: 5 });
-        // setScore(0);
-        // //   { x: box/2+box*(3), y: box/2+box*(7) },
-        // setSnake(() => {
-        //   const newSnake = [{ x: box/2+box*(3), y: box/2+box*(7) }];
-        //   return newSnake;
-        // });
-        clearInterval(game);
-      }
-
-      eatTail(newHead, snake);
-
-      // добавляет елемент в начало массива
-      // snake.unshift(newHead);
       setSnake(prevState => {
         const newSnake = [newHead, ...prevState];
         return newSnake;
       });
+
+      if (onTarns.has(snakeY) && onTarns.has(snakeX)) {
+        setDirections(prevState => {
+          let newDirections = [...prevState];
+          if (newDirections.length === 2) {
+            newDirections.shift();
+            return [...newDirections];
+          } else {
+            return [...newDirections];
+          }
+        });
+      }
+    }
+
+    const drawGame = () => {
+      ctx.clearRect(0, 0, box*columns, box*rows);
+      //drawBack();
+      drawFood();
+      drawSnake();
+
+      eatFood();
+      step();
+      collision();
     };
+
     const game = setInterval(drawGame, speedGame);
-
-
-/*
-
-    const moveSnake = () => {
-      if (direction) {
-        const newSnake = [...snake];
-        const snakeHead = { x: newSnake[0].x, y: newSnake[0].y };
-
-        switch (direction) {
-          case 'right':
-            snakeHead.x += snakeStep;
-            break;
-          case 'left':
-            snakeHead.x -= snakeStep;
-            break;
-          case 'up':
-            snakeHead.y -= snakeStep;
-            break;
-          case 'down':
-            snakeHead.y += snakeStep;
-            break;
-          default:
-            break;
-        }
-
-        // eatFood(snakeHead);
-        // collision(snakeHead);
-        // setSnake((prevState) => {
-        //   const newSnake = [snakeHead, ...prevState];
-        //
-        //   return newSnake;
-        // });
-      }
-    };
-
-    const collision = (snakeHead) => {
-      if (snakeHead.x + snakeStep >= box*columns-box/2 || snakeHead.x + snakeStep <= 0+box/2
-        || snakeHead.y + snakeStep >= box*rows-box/2 || snakeHead.y + snakeStep <= 0+box/2) {
-
-
-        setDirection('up');
-        setFood({ x: 3, y: 5 });
-        setScore(0);
-        //   { x: box/2+box*(3), y: box/2+box*(7) },
-        setSnake(prevState => {
-          const newSnake = [{ x: 100, y: 300 }];
-          return prevState;
-        });
-
-      }
-    };
-
-    const eatFood = (head) => {
-      const snakeHead = head;
-
-      if (snakeHead.x === box/2+box*(food.x) && snakeHead.y === box/2+box*(food.y)) {
-        setScore(prevState => prevState+1);
-
-        setFood({
-          x: Math.floor(Math.random() * (columns)),
-          y: Math.floor(Math.random() * (rows))
-        });
-
-        // добавить количество пропусков для отмены удаления последнего элемента
-        setSkipSteps(prevState => prevState+box);
-      } else {
-        if (skipSteps) {
-          setSkipSteps(prevState => prevState-1);
-        } else {
-          setSnake((prevState) => {
-            const newSnake = prevState.filter((item, index) => index !== prevState.length-1);
-            return newSnake;
-          });
-        }
-      }
-    };
-
-*/
 
     return () => {
       clearInterval(game);
     };
-  }, [snake, food.x, food.y, direction, skipSteps]);
+  }, [score, snake, food, directions, skipSteps, onTarns]);
 
   useEffect(() => {
-    // function eatTail() {
-    //   for (let i = 1; i < snake.length; i++) {
-    //     if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) {
-    //       return true;
-    //     }
-    //   }
-    //   return false;
-    // }
-
-    if (snake[0].x < box/2 || snake[0].x > box*columns-box/2
-      || snake[0].y < box/2 || snake[0].y > box*rows-box/2 /*|| eatTail()*/)
-    {
-      setSnake([{ x: box/2+box*(3), y: box/2+box*(9) }]);
-      setSkipSteps(box);
-      setFood({ x: 3, y: 5 });
-      setScore(0);
+    // Loading max score
+    const savedScore = localStorage.getItem('snakeScore');
+    if (savedScore) {
+      setMaxScore(Number(savedScore));
     }
-  }, [snake]);
+
+    // Creating an array of allowed turns
+    const tarnsArray = new Set([]);
+    for (let i = 0; i <= rows; i++) {
+      tarnsArray.add(i*box+box/2);
+    }
+    setOnTarns(tarnsArray);
+
+    // Button click events
+    const handleKeyPress = ((event) => {
+      const nextDirections = new Set([]);
+
+      switch (event.keyCode) {
+
+        // Right
+        case 39:
+          setDirections((prevState) => {
+            let newDirections = [...prevState];
+            if (newDirections.length === 1) {
+              if ((prevState[prevState.length-1] !== 37) && (prevState[prevState.length-1] !== 39)) {
+                return [...newDirections, 39];
+              }
+            }
+            return [...newDirections];
+          });
+          break;
+
+        // Left
+        case 37:
+          setDirections((prevState) => {
+            let newDirections = [...prevState];
+            if (newDirections.length === 1) {
+              if ((prevState[prevState.length-1] !== 39) && (prevState[prevState.length-1] !== 37)) {
+                return [...newDirections, 37];
+              }
+            }
+            return [...newDirections];
+          });
+          break;
+
+        // Up
+        case 38:
+          setDirections((prevState) => {
+            let newDirections = [...prevState];
+            if (newDirections.length === 1) {
+              if ((prevState[prevState.length-1] !== 40) && (prevState[prevState.length-1] !== 38)) {
+                return [...newDirections, 38];
+              }
+            }
+            return [...newDirections];
+          });
+          break;
+
+        // Down
+        case 40:
+          setDirections((prevState) => {
+            let newDirections = [...prevState];
+            if (newDirections.length === 1) {
+              if ((prevState[prevState.length-1] !== 38) && (prevState[prevState.length-1] !== 40)) {
+                return [...newDirections, 40];
+              }
+            }
+            return [...newDirections];
+          });
+          break;
+
+        default: break;
+      }
+    });
+    window.addEventListener('keydown', handleKeyPress);
+  }, []);
+
+  useEffect(() => {
+    if (score > maxScore) {
+      setMaxScore(score);
+      localStorage.setItem('snakeScore', `${score}`);
+    }
+  }, [maxScore, score]);
 
   return (
     <Box flex={4} p={2} minHeight={'calc(100vh - 97px)'}>
@@ -290,7 +296,6 @@ export default function Snake() {
           display: 'flex',
           maxWidth: '500px',
           width: (`calc(${box*columns}px)`),
-          marginBottom: '20px',
           alignItems: 'center',
           alignContent: 'center',
           justifyContent: 'space-between'
@@ -313,7 +318,15 @@ export default function Snake() {
           </Box>
         </Box>
 
-        <ListItemText primary={`Score: ${score} [ ${snake.length} ]`} />
+        <Box sx={{
+          maxWidth: '500px',
+          width: (`calc(${box*columns}px)`),
+          textAlign: 'left'
+        }}>
+          <ListItemText primary={`Score: ${score}`} />
+          <ListItemText primary={`Max score: ${maxScore}`} />
+        </Box>
+
         <canvas
           ref={canvasRef}
           width={box*columns}
