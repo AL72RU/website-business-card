@@ -1,4 +1,4 @@
-import { Box, Container, createTheme, Stack, ThemeProvider } from '@mui/material';
+import { Box, Container, Stack, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import Navbar from './objects/Navbar';
 import Sidebar from './objects/Sidebar';
@@ -8,54 +8,14 @@ import Projects from './pages/Projects';
 import Notes from './pages/Notes';
 import AppDrawer from './objects/AppDrawer';
 import { UIProvider } from './context/UIContext';
-import { useState } from 'react';
 import Snake from './pages/projecs/Snake';
 import ToDoList from './pages/projecs/ToDoList';
+import useTheme from './hooks/useTheme';
 
 const basename = ''; /*  '/website-business-card/' or ''  */
 
 function App() {
-  const [mode, setMode] = useState('dark');
-  const theme = createTheme({
-    palette: {
-      mode,
-      ...(mode === 'dark' ? {
-        background: {
-          'paper': '#010409',
-          'default': '#0d1117'
-        },
-        text: {
-          'primary': '#f0f6fc',
-        }
-      } : {
-        primary: {
-          'main': '#4485ff',
-          'contrastText': '#ffffff'
-        },
-        background: {
-          'default': '#fffbf5'
-        },
-        text: {
-          'primary': '#000000',
-        }
-      })
-    },
-    components: {
-      MuiDrawer: {
-        styleOverrides: {
-          paper: {
-            width: 200,
-            borderRadius: '0px 10px 10px 0px',
-            borderRight: '1px solid #3d444d',
-            ...(mode === 'dark' ? {
-              backgroundImage: 'none',
-              background: '#151b23'
-            } : {})
-          }
-        }
-      }
-    }
-  });
+  const { theme, mode, toggleMode } = useTheme();
 
   return (
     <ThemeProvider theme={theme}>
@@ -63,7 +23,7 @@ function App() {
         <UIProvider>
           <Navbar
             mode={mode}
-            setMode={setMode}/>
+            toggleMode={toggleMode}/>
           <Container>
             <Stack direction='row' spacing={0} justifyContent='space-between'>
               <Router

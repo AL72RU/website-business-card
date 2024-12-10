@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, ListItemIcon, ListItemText, Typography } from '@mui/material';
-import { ArrowBack, Gesture, QuestionMark } from '@mui/icons-material';
+import { ArrowBack, Fullscreen, FullscreenExit } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import useFullScreen from '../../hooks/useFullScreen';
 
 const box = 44;
 const rows = 10;
@@ -22,6 +23,20 @@ export default function Snake() {
   const [directions, setDirections] = useState([0]);
   const [skipSteps, setSkipSteps] = useState(0);
   const [onTarns, setOnTarns] = useState(new Set([]));
+  const { modeOn, modeOff } = useFullScreen();
+  const [fullScreenState, setFullScreenState] = useState(false);
+
+  const toggleFullScreen = useCallback(() => {
+    setFullScreenState(prevState => {
+      let newState;
+      if (prevState) {
+        newState = modeOff();
+      } else {
+        newState = modeOn();
+      }
+      return newState ? !prevState : prevState;
+    });
+  }, [modeOn, modeOff]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -290,7 +305,7 @@ export default function Snake() {
   }, [maxScore, score]);
 
   return (
-    <Box flex={4} p={2} minHeight={'calc(100vh - 97px)'}>
+    <Box flex={4} p={2} minHeight={'calc(100vh - 97px)'} id={'fullScreen'}>
       <center>
         <Box sx={{
           display: 'flex',
@@ -301,7 +316,7 @@ export default function Snake() {
           justifyContent: 'space-between'
         }}>
 
-          <Link to={'/projects'} sx={{}}>
+          <Link to={'/projects'}>
             <Box sx={{ padding: '15px' }} >
               <ListItemIcon sx={{ minWidth: 0 }}>
                 <ArrowBack />
@@ -309,13 +324,14 @@ export default function Snake() {
             </Box>
           </Link>
 
-          <Typography variant='h5' >
+          <Typography variant='h5' sx={{ paddingBottom: '5px' }}>
             {'Snake game'}
           </Typography>
 
-          <Box sx={{ padding: '15px' }}>
-            <QuestionMark />
+          <Box sx={{ padding: '15px' }} onClick={toggleFullScreen}>
+            {fullScreenState ? <FullscreenExit/> : <Fullscreen/>}
           </Box>
+
         </Box>
 
         <Box sx={{
@@ -333,11 +349,6 @@ export default function Snake() {
           height={box*rows}
           style={{ border: '1px solid #3d444d' }}
         />
-        {/*{snake.map((item, index) => (*/}
-        {/*  <div key={index}>*/}
-        {/*    {`x: ${item.x} y: ${item.y}`}*/}
-        {/*  </div>*/}
-        {/*))}*/}
       </center>
     </Box>
   );

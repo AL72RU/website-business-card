@@ -3,3 +3,40 @@ body {
   margin: 0;
   height: 100%;
 }
+
+.container-01 {
+  background: red;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 200px;
+  transform: translate3d(-50%, -50%, 0);
+}
+.inner-container-01 {
+  background: blue;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 150px;
+  transform: translate3d(-50%, -50%, 0);
+}
+.button-container-01 {
+  background: yellow;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 100px;
+  transform: translate3d(-50%, -50%, 0);
+}
+.button-01 {
+  /*background: yellow;*/
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 50px;
+  transform: translate3d(-50%, -50%, 0);
+}

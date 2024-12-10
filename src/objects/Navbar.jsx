@@ -31,13 +31,13 @@ const Icons = styled(Box)(({ theme }) => ({
   }
 }));
 
-const UserBox = styled(Box)(({ theme }) => ({
+const UserBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
 }));
 
-const Navbar = ({ mode, setMode }) => {
+const Navbar = ({ mode, toggleMode }) => {
   const { setDrawerOpen } = useUIContext();
 
   return (
@@ -66,9 +66,9 @@ const Navbar = ({ mode, setMode }) => {
               {/*</Badge>*/}
             </Icons>
             {mode === 'dark' ? (
-              <DarkMode onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}/>
+              <DarkMode onClick={() => toggleMode(mode === 'dark' ? 'light' : 'dark')}/>
             ) : (
-              <LightMode onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}/>
+              <LightMode onClick={() => toggleMode(mode === 'dark' ? 'light' : 'dark')}/>
             )}
             {/*<Avatar sx={{ width: 30, height: 30 }} src=''/>*/}
           </UserBox>
