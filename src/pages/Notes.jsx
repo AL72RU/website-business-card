@@ -27,6 +27,10 @@ const links = {
   title: 'Useful links',
   list: [
     {
+      name: 'Timesheet (Табель учета рабочего времени)',
+      path: 'https://docs.google.com/spreadsheets/d/1wdfyoOuGd3dmAnepfHkOxXx5QnksQOFd/edit?usp=sharing&ouid=100295123914234906588&rtpof=true&sd=true'
+    },
+    {
       name: 'The JavaScript language',
       path: 'https://javascript.info/js'
     },
